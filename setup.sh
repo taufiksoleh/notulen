@@ -37,12 +37,99 @@ if [ ! -f backend/.env ]; then
     cp backend/.env.example backend/.env
     echo "📝 Created backend/.env from template"
     echo ""
-    echo "⚠️  Please edit backend/.env and add your API keys:"
-    echo "   - OPENAI_API_KEY (for GPT-4 summaries)"
-    echo "   - or ANTHROPIC_API_KEY (for Claude summaries)"
+    echo "🤖 Configure your LLM provider"
+    echo "================================"
     echo ""
-    read -p "Press Enter to open backend/.env in your default editor..."
-    ${EDITOR:-nano} backend/.env
+    echo "Choose your LLM provider:"
+    echo "1. OpenRouter (RECOMMENDED - Free tier, 100+ models, excellent Indonesian)"
+    echo "2. OpenAI (GPT-4)"
+    echo "3. Anthropic (Claude)"
+    echo "4. Skip (configure manually later)"
+    echo ""
+    read -p "Enter your choice (1-4): " llm_choice
+
+    case $llm_choice in
+        1)
+            echo ""
+            echo "🌟 OpenRouter Setup"
+            echo "==================="
+            echo ""
+            echo "OpenRouter Benefits:"
+            echo "  • FREE model available (deepseek-r1-0528-qwen3-8b:free)"
+            echo "  • 30x cheaper than OpenAI for paid models"
+            echo "  • Excellent Indonesian language support"
+            echo "  • 100+ models to choose from"
+            echo ""
+            echo "Get your API key from: https://openrouter.ai/keys"
+            echo "(Press Ctrl+C to cancel if you need to get an API key first)"
+            echo ""
+            read -p "Enter your OpenRouter API key (sk-or-v1-...): " openrouter_key
+
+            if [ ! -z "$openrouter_key" ]; then
+                sed -i "s/LLM_PROVIDER=.*/LLM_PROVIDER=openrouter/" backend/.env
+                sed -i "s/OPENROUTER_API_KEY=.*/OPENROUTER_API_KEY=$openrouter_key/" backend/.env
+                echo ""
+                echo "✅ OpenRouter configured successfully!"
+                echo "   Using model: deepseek/deepseek-r1-0528-qwen3-8b:free (FREE)"
+                echo ""
+                echo "💡 Tip: You can change the model later in backend/.env"
+                echo "   Popular models:"
+                echo "   • deepseek/deepseek-r1-0528-qwen3-8b:free (free)"
+                echo "   • deepseek/deepseek-chat (cheap, excellent)"
+                echo "   • qwen/qwen-2.5-72b-instruct (best for Indonesian)"
+            else
+                echo "⚠️  No API key entered. You'll need to configure it manually."
+            fi
+            ;;
+        2)
+            echo ""
+            echo "🔑 OpenAI Setup"
+            echo "==============="
+            echo ""
+            echo "Get your API key from: https://platform.openai.com/api-keys"
+            echo ""
+            read -p "Enter your OpenAI API key (sk-...): " openai_key
+
+            if [ ! -z "$openai_key" ]; then
+                sed -i "s/LLM_PROVIDER=.*/LLM_PROVIDER=openai/" backend/.env
+                sed -i "s/OPENAI_API_KEY=.*/OPENAI_API_KEY=$openai_key/" backend/.env
+                echo ""
+                echo "✅ OpenAI configured successfully!"
+                echo "   Using model: gpt-4-turbo-preview"
+            else
+                echo "⚠️  No API key entered. You'll need to configure it manually."
+            fi
+            ;;
+        3)
+            echo ""
+            echo "🔑 Anthropic Setup"
+            echo "=================="
+            echo ""
+            echo "Get your API key from: https://console.anthropic.com/settings/keys"
+            echo ""
+            read -p "Enter your Anthropic API key (sk-ant-...): " anthropic_key
+
+            if [ ! -z "$anthropic_key" ]; then
+                sed -i "s/LLM_PROVIDER=.*/LLM_PROVIDER=anthropic/" backend/.env
+                sed -i "s/ANTHROPIC_API_KEY=.*/ANTHROPIC_API_KEY=$anthropic_key/" backend/.env
+                echo ""
+                echo "✅ Anthropic configured successfully!"
+                echo "   Using model: claude-3-5-sonnet-20241022"
+            else
+                echo "⚠️  No API key entered. You'll need to configure it manually."
+            fi
+            ;;
+        4)
+            echo ""
+            echo "⏭️  Skipping LLM configuration"
+            echo "   You can configure it later by editing backend/.env"
+            ;;
+        *)
+            echo ""
+            echo "⚠️  Invalid choice. Skipping LLM configuration."
+            echo "   You can configure it later by editing backend/.env"
+            ;;
+    esac
 else
     echo "✅ backend/.env already exists"
 fi
