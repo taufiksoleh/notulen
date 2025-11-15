@@ -1,6 +1,6 @@
 """
 LLM Processor - Generate summaries and extract action items
-Uses OpenAI GPT-4 or Anthropic Claude
+Uses OpenAI GPT-4, Anthropic Claude, or OpenRouter
 """
 
 import os
@@ -21,7 +21,7 @@ class LLMProcessor:
     """
 
     def __init__(self):
-        self.provider = os.getenv("LLM_PROVIDER", "openai")  # openai or anthropic
+        self.provider = os.getenv("LLM_PROVIDER", "openai")  # openai, anthropic, or openrouter
         self.client = None
         self._init_client()
 
@@ -45,6 +45,18 @@ class LLMProcessor:
                     logger.info("Anthropic client initialized")
                 else:
                     logger.warning("ANTHROPIC_API_KEY not set")
+
+            elif self.provider == "openrouter":
+                from openai import AsyncOpenAI
+                api_key = os.getenv("OPENROUTER_API_KEY")
+                if api_key:
+                    self.client = AsyncOpenAI(
+                        api_key=api_key,
+                        base_url="https://openrouter.ai/api/v1"
+                    )
+                    logger.info("OpenRouter client initialized")
+                else:
+                    logger.warning("OPENROUTER_API_KEY not set")
 
         except Exception as e:
             logger.error(f"Failed to initialize LLM client: {e}")
@@ -78,6 +90,8 @@ class LLMProcessor:
                 return await self._summarize_openai(transcription, language)
             elif self.provider == "anthropic":
                 return await self._summarize_anthropic(transcription, language)
+            elif self.provider == "openrouter":
+                return await self._summarize_openrouter(transcription, language)
         except Exception as e:
             logger.error(f"LLM summarization failed: {e}")
             return self._generate_basic_summary(transcription)
@@ -133,6 +147,33 @@ class LLMProcessor:
             content = content.split("```")[1].split("```")[0].strip()
 
         result = json.loads(content)
+
+        return {
+            "summary": result.get("summary", ""),
+            "action_items": result.get("action_items", []),
+            "key_points": result.get("key_points", []),
+            "participants": result.get("participants")
+        }
+
+    async def _summarize_openrouter(self, transcription: str, language: str) -> Dict[str, Any]:
+        """Generate summary using OpenRouter (supports 100+ models)"""
+
+        system_prompt = self._get_system_prompt(language)
+
+        # Get model from env, default to DeepSeek V3 (free/cheap, great for Indonesian)
+        model = os.getenv("OPENROUTER_MODEL", "deepseek/deepseek-chat")
+
+        response = await self.client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"Meeting Transcription:\n\n{transcription}"}
+            ],
+            temperature=0.7,
+            response_format={"type": "json_object"}
+        )
+
+        result = json.loads(response.choices[0].message.content)
 
         return {
             "summary": result.get("summary", ""),

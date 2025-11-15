@@ -10,7 +10,9 @@ AI-powered meeting notes application with advanced speech-to-text capabilities o
   - Automatic language detection and intelligent model routing
 
 - **AI-Powered Summaries**
-  - Automatic meeting summarization using GPT-4 or Claude
+  - Automatic meeting summarization using GPT-4, Claude, or OpenRouter
+  - OpenRouter support: Access 100+ AI models (DeepSeek, Llama, Qwen, Gemini, etc.)
+  - Budget-friendly: Free tier + pay-as-you-go (30x cheaper than OpenAI!)
   - Action item extraction
   - Key points identification
 
@@ -56,7 +58,10 @@ AI-powered meeting notes application with advanced speech-to-text capabilities o
 ### Prerequisites
 
 - Docker and Docker Compose
-- OpenAI API key or Anthropic API key (for summaries)
+- API key for summaries (choose one):
+  - **OpenRouter** (Recommended) - Free tier + very cheap pay-as-you-go
+  - OpenAI - Premium quality
+  - Anthropic Claude - Good balance
 
 ### Installation
 
@@ -131,8 +136,13 @@ npm run dev
 # Whisper Model (tiny, base, small, medium, large, turbo)
 WHISPER_MODEL=turbo
 
-# LLM Provider (openai or anthropic)
-LLM_PROVIDER=openai
+# LLM Provider (openai, anthropic, or openrouter)
+LLM_PROVIDER=openrouter
+
+# OpenRouter (RECOMMENDED for budget) - Get key at https://openrouter.ai/keys
+OPENROUTER_API_KEY=your_key_here
+OPENROUTER_MODEL=deepseek/deepseek-chat  # Free tier available!
+# Other models: meta-llama/llama-3.3-70b-instruct, qwen/qwen-2.5-72b-instruct
 
 # OpenAI (if using OpenAI)
 OPENAI_API_KEY=your_key_here
@@ -198,9 +208,16 @@ Based on the research in [SPEECH_TO_TEXT_RESEARCH.md](SPEECH_TO_TEXT_RESEARCH.md
 - Production: $170/month (GPU on-demand)
 - Serverless GPU: $0.05-0.10 per meeting
 
-### With LLM APIs
+### With LLM APIs (Per Meeting Summary)
+- **OpenRouter (DeepSeek)**: ~$0.001-0.01 per summary ⭐ **CHEAPEST!**
+- **OpenRouter (Llama/Qwen)**: ~$0.003-0.015 per summary
 - OpenAI GPT-4: ~$0.02-0.05 per summary
 - Anthropic Claude: ~$0.01-0.03 per summary
+
+### OpenRouter Free Tier
+- 50 free requests/day (no credit card)
+- 1,000 requests/day after $10 one-time purchase
+- Free models: DeepSeek V3, Gemini 2.0 Flash, and more!
 
 ## Deployment
 
@@ -281,7 +298,7 @@ npm test
 - **Frontend**: Next.js 14, React, TypeScript, TailwindCSS
 - **Backend**: FastAPI, Python 3.11
 - **STT Models**: Whisper, Indonesian Wav2vec 2.0
-- **LLM**: OpenAI GPT-4 or Anthropic Claude
+- **LLM**: OpenRouter (100+ models), OpenAI GPT-4, or Anthropic Claude
 - **Database**: SQLite (upgradable to PostgreSQL)
 - **Deployment**: Docker, Docker Compose
 
