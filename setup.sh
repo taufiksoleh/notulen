@@ -158,7 +158,13 @@ case $choice in
     1)
         echo ""
         echo "Starting Notulen with Docker Compose..."
-        docker-compose up -d
+        echo "🧹 Cleaning up old Docker builds..."
+        docker-compose down --volumes 2>/dev/null || true
+        docker system prune -f --filter "label=com.docker.compose.project=notulen" 2>/dev/null || true
+        echo "✅ Cleanup complete"
+        echo ""
+        echo "🏗️  Building and starting services..."
+        docker-compose up -d --build
         echo ""
         echo "✅ Notulen is running!"
         echo ""
