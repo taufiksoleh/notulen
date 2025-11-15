@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./data:/app/data
+      - ./app:/app/app
+    environment:
+      - DATABASE_URL=sqlite:///./data/notulen.db
+      - DEBUG=True
+      - WHISPER_MODEL=base
+      - USE_INDONESIAN_MODEL=True
+    restart: unless-stopped
+    # Uncomment below for GPU support
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # Optional: PostgreSQL database
+  # db:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: password
+  #     POSTGRES_DB: notulen
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+
+# volumes:
+#   postgres_data:
