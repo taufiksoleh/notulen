@@ -64,7 +64,37 @@ notulen/
 
 - **Backend**: Python 3.11+, pip
 - **Frontend**: Flutter 3.0+
-- **Optional**: Docker & Docker Compose
+- **Optional**: Docker & Docker Compose, Make
+
+### Using Makefile (Easiest)
+
+The project includes Makefiles for easy development:
+
+```bash
+# First time setup
+make setup
+
+# Start development (backend + frontend)
+make dev
+
+# Or start backend with Docker + frontend
+make dev-docker
+
+# View all available commands
+make help
+```
+
+**Common Commands:**
+```bash
+make install           # Install all dependencies
+make dev               # Run both backend and frontend
+make test              # Run all tests
+make clean             # Clean all build artifacts
+make docker-up         # Start backend with Docker
+make frontend-web      # Run frontend on web only
+make backend-dev       # Run backend only
+make status            # Check project status
+```
 
 ### Option 1: Docker (Recommended)
 
@@ -72,6 +102,7 @@ notulen/
 # Backend only
 cd backend
 docker-compose up -d
+# or: make docker-up (from root)
 
 # Access API at http://localhost:8000
 ```
@@ -86,6 +117,7 @@ python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
+# or: make dev (from backend directory)
 ```
 
 **Frontend:**
@@ -95,8 +127,7 @@ cd frontend
 flutter pub get
 flutter pub run build_runner build
 flutter run -d chrome  # For web
-# or
-flutter run  # For mobile
+# or: make run-web (from frontend directory)
 ```
 
 ## Architecture
