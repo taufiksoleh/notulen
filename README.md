@@ -299,6 +299,7 @@ flutter test
 
 ## Documentation
 
+- **Makefile Guide**: `MAKEFILE_GUIDE.md` - Complete Makefile command reference
 - **Research**: `SPEECH_TO_TEXT_RESEARCH.md` - Detailed STT model comparison
 - **Backend**: `backend/README.md` - API documentation
 - **Frontend**: `frontend/README.md` - Flutter app guide
