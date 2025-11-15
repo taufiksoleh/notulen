@@ -18,7 +18,7 @@ services:
       # Get your API key from https://openrouter.ai/keys
       # 30x cheaper than OpenAI, excellent Indonesian support
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-deepseek/deepseek-chat}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-deepseek/deepseek-r1-0528-qwen3-8b:free}
 
       # OpenAI Configuration (Fallback option)
       - OPENAI_API_KEY=${OPENAI_API_KEY}

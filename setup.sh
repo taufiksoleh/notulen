@@ -43,7 +43,7 @@ if [ ! -f backend/.env ]; then
     echo "   - Set LLM_PROVIDER=openrouter"
     echo "   - Get API key from https://openrouter.ai/keys"
     echo "   - Set OPENROUTER_API_KEY=your_key"
-    echo "   - Default model: deepseek/deepseek-chat (free/cheap)"
+    echo "   - Default model: deepseek/deepseek-r1-0528-qwen3-8b:free (free)"
     echo ""
     echo "   OR use OpenAI:"
     echo "   - Set LLM_PROVIDER=openai"

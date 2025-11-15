@@ -111,14 +111,15 @@ OpenRouter is the **recommended LLM provider** for Notulen due to its:
    # In your backend/.env file
    LLM_PROVIDER=openrouter
    OPENROUTER_API_KEY=sk-or-v1-... # Your API key from https://openrouter.ai/keys
-   OPENROUTER_MODEL=deepseek/deepseek-chat  # Default model (free/cheap)
+   OPENROUTER_MODEL=deepseek/deepseek-r1-0528-qwen3-8b:free  # Default model (free)
    ```
 
 3. **Recommended Models**:
 
    | Model | Cost/1M tokens | Best For | Indonesian Support |
    |-------|----------------|----------|-------------------|
-   | `deepseek/deepseek-chat` | $0.14 input / $0.28 output | General use, budget-friendly | ⭐⭐⭐⭐⭐ |
+   | `deepseek/deepseek-r1-0528-qwen3-8b:free` | FREE | Default, general use | ⭐⭐⭐⭐⭐ |
+   | `deepseek/deepseek-chat` | $0.14 input / $0.28 output | Budget-friendly, reliable | ⭐⭐⭐⭐⭐ |
    | `meta-llama/llama-3.3-70b-instruct` | $0.35 input / $0.40 output | High quality summaries | ⭐⭐⭐⭐ |
    | `qwen/qwen-2.5-72b-instruct` | $0.35 input / $0.40 output | Indonesian meetings | ⭐⭐⭐⭐⭐ |
    | `google/gemini-2.0-flash-exp:free` | FREE | Testing, development | ⭐⭐⭐ |
@@ -141,7 +142,7 @@ services:
       - WHISPER_MODEL=turbo
       - LLM_PROVIDER=openrouter
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-deepseek/deepseek-chat}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-deepseek/deepseek-r1-0528-qwen3-8b:free}
       # Keep other providers as fallback options
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
@@ -168,7 +169,7 @@ services:
 3. **Model Not Available**:
    - Check current models: https://openrouter.ai/models
    - Some models require minimum credit balance
-   - Fallback to `deepseek/deepseek-chat` (most reliable)
+   - Fallback to `deepseek/deepseek-r1-0528-qwen3-8b:free` or `deepseek/deepseek-chat`
 
 4. **Slow Responses**:
    - Try a different model (some are faster)
@@ -201,7 +202,7 @@ Configure environment variables in Vercel dashboard:
    - `WHISPER_MODEL=turbo`
    - `LLM_PROVIDER=openrouter` (recommended)
    - `OPENROUTER_API_KEY=your_openrouter_key`
-   - `OPENROUTER_MODEL=deepseek/deepseek-chat`
+   - `OPENROUTER_MODEL=deepseek/deepseek-r1-0528-qwen3-8b:free`
    - `OPENAI_API_KEY=your_key` (optional fallback)
    - `DATABASE_PATH=/app/data/notulen.db`
 6. Deploy
@@ -267,7 +268,7 @@ services:
       - key: OPENROUTER_API_KEY
         type: SECRET
       - key: OPENROUTER_MODEL
-        value: deepseek/deepseek-chat
+        value: deepseek/deepseek-r1-0528-qwen3-8b:free
       - key: OPENAI_API_KEY
         type: SECRET
     health_check:
@@ -504,7 +505,7 @@ WHISPER_MODEL=turbo
 LOG_LEVEL=WARNING
 LLM_PROVIDER=openrouter
 OPENROUTER_API_KEY=your_production_key
-OPENROUTER_MODEL=deepseek/deepseek-chat
+OPENROUTER_MODEL=deepseek/deepseek-r1-0528-qwen3-8b:free
 SENTRY_DSN=your_sentry_dsn
 ```
 
