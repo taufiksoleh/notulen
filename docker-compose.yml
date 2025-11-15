@@ -14,6 +14,8 @@ services:
       - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4-turbo-preview}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - ANTHROPIC_MODEL=${ANTHROPIC_MODEL:-claude-3-5-sonnet-20241022}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL:-deepseek/deepseek-chat}
       - DATABASE_PATH=/app/data/notulen.db
     volumes:
       - backend-data:/app/data
