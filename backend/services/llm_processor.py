@@ -161,7 +161,7 @@ class LLMProcessor:
         system_prompt = self._get_system_prompt(language)
 
         # Get model from env, default to DeepSeek V3 (free/cheap, great for Indonesian)
-        model = os.getenv("OPENROUTER_MODEL", "deepseek/deepseek-chat")
+        model = os.getenv("OPENROUTER_MODEL", "deepseek/deepseek-r1-0528-qwen3-8b:free")
 
         response = await self.client.chat.completions.create(
             model=model,
