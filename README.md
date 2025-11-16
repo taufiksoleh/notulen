@@ -26,6 +26,38 @@ AI-powered meeting notes application with advanced speech-to-text capabilities o
   - Real-time transcription progress
   - Easy meeting management
 
+## User Interface
+
+The application provides an intuitive interface for recording, uploading, and managing your meeting notes.
+
+### Recording Your Meetings
+
+Start a new recording with a single click. The interface is deliberately simple—just hit the button and start talking.
+
+![Start Recording](frontend/screenshot/1.png)
+
+Once recording begins, you'll see a live timer tracking your session. The app handles everything in the background, so you can focus on your meeting.
+
+![Active Recording](frontend/screenshot/2.png)
+
+### Uploading Audio Files
+
+Already have a recording? Drop it into the upload area. The system accepts MP3, WAV, M4A, and WebM files up to 100MB.
+
+![Upload Interface](frontend/screenshot/3.png)
+
+### Managing Your Meetings
+
+All your meetings are organized in one place, with clear timestamps and processing status. The green "Summarized" badge indicates when AI processing is complete.
+
+![Meetings List](frontend/screenshot/4.png)
+
+### Viewing Results
+
+Each meeting shows both the AI-generated summary and full transcription. Action items are automatically extracted and highlighted, making it easy to see what needs follow-up.
+
+![Meeting Details](frontend/screenshot/5.png)
+
 ## Architecture
 
 ```
