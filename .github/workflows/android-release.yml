@@ -102,14 +102,14 @@ jobs:
           EOF
 
       - name: Upload Release APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: release-apk-${{ steps.get_version.outputs.VERSION }}
           path: android/app/build/outputs/apk/release/notulen-${{ steps.get_version.outputs.VERSION }}.apk
           retention-days: 90
 
       - name: Upload Release Bundle
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: release-bundle-${{ steps.get_version.outputs.VERSION }}
           path: android/app/build/outputs/bundle/release/notulen-${{ steps.get_version.outputs.VERSION }}.aab
