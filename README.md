@@ -22,7 +22,8 @@ AI-powered meeting notes application with advanced speech-to-text capabilities o
   - Timestamped transcriptions
 
 - **Modern UI**
-  - Clean, responsive interface built with Next.js 14
+  - Clean, responsive web interface built with Next.js 14
+  - Native Android app with Jetpack Compose
   - Real-time transcription progress
   - Easy meeting management
 
@@ -61,28 +62,30 @@ Each meeting shows both the AI-generated summary and full transcription. Action 
 ## Architecture
 
 ```
-┌─────────────────────────────────────┐
-│   Frontend (Next.js 14)             │
-│   - Audio Recording                 │
-│   - File Upload                     │
-│   - Meeting Management              │
-└──────────────┬──────────────────────┘
-               │
-               ▼
-┌─────────────────────────────────────┐
-│   Backend (FastAPI)                 │
-│   - STT Processing                  │
-│   - LLM Integration                 │
-│   - Database Management             │
-└──────────────┬──────────────────────┘
-               │
-         ┌─────┴─────┐
-         │           │
-         ▼           ▼
-┌──────────────┐  ┌──────────────────┐
-│  Indonesian  │  │ Whisper Turbo    │
-│  Wav2vec 2.0 │  │ (Multilingual)   │
-└──────────────┘  └──────────────────┘
+┌─────────────────────────────────────┐  ┌─────────────────────────────────────┐
+│   Frontend (Next.js 14)             │  │   Android App (Jetpack Compose)     │
+│   - Audio Recording                 │  │   - Clean Architecture              │
+│   - File Upload                     │  │   - MVVM Pattern                    │
+│   - Meeting Management              │  │   - Offline Support (Room)          │
+└──────────────┬──────────────────────┘  └──────────────┬──────────────────────┘
+               │                                         │
+               └──────────────┬──────────────────────────┘
+                              │
+                              ▼
+               ┌─────────────────────────────────────┐
+               │   Backend (FastAPI)                 │
+               │   - STT Processing                  │
+               │   - LLM Integration                 │
+               │   - Database Management             │
+               └──────────────┬──────────────────────┘
+                              │
+                        ┌─────┴─────┐
+                        │           │
+                        ▼           ▼
+               ┌──────────────┐  ┌──────────────────┐
+               │  Indonesian  │  │ Whisper Turbo    │
+               │  Wav2vec 2.0 │  │ (Multilingual)   │
+               └──────────────┘  └──────────────────┘
 ```
 
 ## Quick Start
@@ -309,6 +312,14 @@ notulen/
 │   ├── lib/
 │   │   └── api.ts             # API client
 │   └── package.json
+├── android/
+│   ├── app/src/main/java/com/notulen/
+│   │   ├── data/              # Data layer (API, DB, Repository)
+│   │   ├── domain/            # Domain layer (Models, Use Cases)
+│   │   ├── presentation/      # UI layer (Compose, ViewModels)
+│   │   └── di/                # Dependency Injection
+│   ├── build.gradle.kts
+│   └── README.md
 ├── docker-compose.yml
 └── README.md
 ```
@@ -328,6 +339,7 @@ npm test
 ## Technology Stack
 
 - **Frontend**: Next.js 14, React, TypeScript, TailwindCSS
+- **Android**: Kotlin, Jetpack Compose, Clean Architecture, Hilt, Room, Retrofit
 - **Backend**: FastAPI, Python 3.11
 - **STT Models**: Whisper, Indonesian Wav2vec 2.0
 - **LLM**: OpenRouter (100+ models), OpenAI GPT-4, or Anthropic Claude
@@ -336,17 +348,20 @@ npm test
 
 ## Roadmap
 
-### Phase 1: MVP (Current) ✅
+### Phase 1: MVP ✅
 - [x] Basic transcription (Whisper)
 - [x] Audio recording and upload
 - [x] Meeting storage
 - [x] AI summaries
+- [x] Web frontend (Next.js)
+- [x] Native Android app with Clean Architecture ✨
 
 ### Phase 2: Enhanced Features
 - [ ] Indonesian Wav2vec 2.0 integration
 - [ ] Real-time streaming transcription
 - [ ] Speaker diarization
 - [ ] Multiple language support in one meeting
+- [ ] iOS app
 
 ### Phase 3: Enterprise Features
 - [ ] User authentication
