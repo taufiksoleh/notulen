@@ -37,9 +37,13 @@ gradle-app.setting
 # Android Studio captures folder
 captures/
 
-# Keystore files
+# Keystore files - NEVER COMMIT THESE!
 *.jks
 *.keystore
+keystore.properties
+release-keystore.jks
+release-keystore.keystore
+keystore-base64.txt
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
@@ -47,7 +51,13 @@ captures/
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 
+# Play Store Service Account
+play-store-*.json
+
 # Freeline
 freeline.py
 freeline/
 freeline_project_description.json
+
+# Release notes
+release_notes.md

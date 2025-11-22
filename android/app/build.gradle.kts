@@ -26,13 +26,37 @@ android {
         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8000\"")
     }
 
+    signingConfigs {
+        create("release") {
+            // For CI/CD, these will be provided via environment variables
+            storeFile = file(System.getenv("KEYSTORE_FILE") ?: "release-keystore.jks")
+            storePassword = System.getenv("SIGNING_STORE_PASSWORD") ?: "android"
+            keyAlias = System.getenv("SIGNING_KEY_ALIAS") ?: "release"
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: "android"
+        }
+    }
+
     buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-DEBUG"
+            isDebuggable = true
+        }
+
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            // Sign with release config if available, otherwise use debug
+            try {
+                signingConfig = signingConfigs.getByName("release")
+            } catch (e: Exception) {
+                signingConfig = signingConfigs.getByName("debug")
+            }
         }
     }
 

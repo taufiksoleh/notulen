@@ -125,12 +125,104 @@ android/
 ./gradlew assembleDebug
 ```
 
+Output: `app/build/outputs/apk/debug/app-debug.apk`
+
 ### Release Build
 ```bash
 ./gradlew assembleRelease
 ```
 
-The APK will be generated at: `app/build/outputs/apk/`
+Output: `app/build/outputs/apk/release/app-release.apk`
+
+### Build AAB (for Play Store)
+```bash
+./gradlew bundleRelease
+```
+
+Output: `app/build/outputs/bundle/release/app-release.aab`
+
+## CI/CD Pipeline
+
+The project includes comprehensive CI/CD pipelines using GitHub Actions:
+
+### Workflows
+
+#### 1. Android CI (`android-ci.yml`)
+**Triggers:** Push to main/develop/claude branches, PRs
+
+**Jobs:**
+- **Build and Test**: Compiles code, runs lint, unit tests, generates debug APK/AAB
+- **Code Quality Check**: Runs Detekt and dependency checks
+- **Build Matrix**: Tests on multiple API levels (26, 29, 33, 34)
+- **Security Scan**: Dependency vulnerability scanning
+
+#### 2. Android Release (`android-release.yml`)
+**Triggers:** Git tags (`v*.*.*`, `android-v*.*.*`), manual dispatch
+
+**Features:**
+- Builds signed release APK and AAB
+- Creates GitHub release with artifacts
+- Generates release notes
+- Optional: Uploads to Google Play Store
+
+#### 3. Android PR Checks (`android-pr-checks.yml`)
+**Triggers:** Pull requests
+
+**Features:**
+- Gradle wrapper validation
+- Code formatting checks
+- Lint analysis with comments
+- Test coverage with Codecov
+- APK size analysis
+- Automated PR comments with build results
+
+### Setting Up CI/CD
+
+#### Required GitHub Secrets
+
+For release builds, add these secrets to your repository:
+
+- `KEYSTORE_BASE64`: Base64-encoded release keystore
+- `SIGNING_STORE_PASSWORD`: Keystore password
+- `SIGNING_KEY_ALIAS`: Key alias (usually "release")
+- `SIGNING_KEY_PASSWORD`: Key password
+
+#### Optional Secrets
+
+- `PLAY_STORE_JSON_KEY`: For Play Store publishing
+- `CODECOV_TOKEN`: For code coverage reporting
+
+See [keystore-setup.md](keystore-setup.md) for detailed instructions.
+
+### Creating a Release
+
+#### Method 1: Git Tag
+```bash
+# Increment version first
+./scripts/increment-version.sh [major|minor|patch]
+
+# Commit and tag
+git add app/build.gradle.kts
+git commit -m "Bump version to X.Y.Z"
+git tag -a android-vX.Y.Z -m "Release version X.Y.Z"
+git push origin main --tags
+```
+
+#### Method 2: Manual Workflow Dispatch
+1. Go to **Actions** tab in GitHub
+2. Select **Android Release** workflow
+3. Click **Run workflow**
+4. Enter version number
+5. Click **Run workflow** button
+
+### Artifacts
+
+All builds generate artifacts available in the Actions tab:
+
+- **Debug builds**: 7-day retention
+- **Release builds**: 90-day retention
+- **Test results**: Available for all builds
+- **Lint reports**: Available for all builds
 
 ## Running Tests
 
@@ -217,6 +309,11 @@ Update the backend URL in `app/build.gradle.kts`:
 buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8000\"")
 ```
 
+For production, you might want to use:
+- `http://10.0.2.2:8000` - Android Emulator (localhost)
+- `http://YOUR_IP:8000` - Physical device
+- `https://api.yourapp.com` - Production server
+
 ### Minimum SDK
 
 Current minimum SDK is 26 (Android 8.0). To change:
@@ -226,6 +323,31 @@ defaultConfig {
     minSdk = 26
 }
 ```
+
+### App Signing
+
+See [keystore-setup.md](keystore-setup.md) for complete signing setup instructions.
+
+**Quick setup for local development:**
+1. Generate keystore: `keytool -genkey -v -keystore release-keystore.jks ...`
+2. Create `keystore.properties` with credentials
+3. Build: `./gradlew assembleRelease`
+
+## Scripts
+
+The project includes helpful scripts in the `scripts/` directory:
+
+### Increment Version
+```bash
+./scripts/increment-version.sh [major|minor|patch]
+```
+Automatically updates version code and version name in `build.gradle.kts`
+
+### Generate Release Notes
+```bash
+./scripts/generate-release-notes.sh [previous-tag] [current-tag]
+```
+Generates release notes from git commits between tags
 
 ## Contributing
 
