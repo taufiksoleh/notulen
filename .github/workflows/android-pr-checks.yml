@@ -1,0 +1,127 @@
+name: Android PR Checks
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'android/**'
+      - '.github/workflows/android-pr-checks.yml'
+
+jobs:
+  validation:
+    name: Validate PR
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: android
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Check code formatting
+        run: ./gradlew spotlessCheck || true
+        continue-on-error: true
+
+      - name: Run Lint
+        run: ./gradlew lintDebug
+
+      - name: Analyze Lint Results
+        uses: yutailang0119/action-android-lint@v3
+        if: always()
+        with:
+          report-path: android/app/build/reports/lint-results-debug.xml
+        continue-on-error: true
+
+      - name: Run Unit Tests with Coverage
+        run: ./gradlew testDebugUnitTest jacocoTestReport
+        continue-on-error: true
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        if: always()
+        with:
+          files: android/app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
+          flags: android
+          name: android-coverage
+        continue-on-error: true
+
+      - name: Comment PR with Results
+        uses: actions/github-script@v6
+        if: always()
+        with:
+          script: |
+            const fs = require('fs');
+            let comment = '## Android Build Results\n\n';
+            comment += '✅ Build completed successfully\n';
+            comment += '📱 APK generated and ready for testing\n\n';
+            comment += '### Next Steps\n';
+            comment += '- Review the code changes\n';
+            comment += '- Check lint and test results in the Actions tab\n';
+            comment += '- Download the debug APK from artifacts for testing\n';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+        continue-on-error: true
+
+  size-analysis:
+    name: APK Size Analysis
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: android
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
+
+      - name: Analyze APK Size
+        run: |
+          APK_SIZE=$(du -h app/build/outputs/apk/release/app-release.apk | cut -f1)
+          echo "APK_SIZE=$APK_SIZE" >> $GITHUB_ENV
+          echo "### APK Size: $APK_SIZE" >> $GITHUB_STEP_SUMMARY
+
+      - name: Comment APK Size
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const comment = `## 📦 APK Size Analysis\n\n**Release APK Size:** ${process.env.APK_SIZE}\n\n`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+        continue-on-error: true

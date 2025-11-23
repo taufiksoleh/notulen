@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Notulen</string>
+    <string name="meetings_title">Meeting Notes</string>
+    <string name="record_title">Record Meeting</string>
+    <string name="meeting_detail_title">Meeting Details</string>
+    <string name="start_recording">Start Recording</string>
+    <string name="stop_recording">Stop Recording</string>
+    <string name="no_meetings">No meetings yet</string>
+    <string name="start_first_meeting">Start recording your first meeting</string>
+    <string name="permission_required">Microphone Permission Required</string>
+    <string name="permission_description">This app needs access to your microphone to record meetings</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="transcription">Transcription</string>
+    <string name="summary">Summary</string>
+    <string name="action_items">Action Items</string>
+    <string name="key_points">Key Points</string>
+    <string name="generate_summary">Generate AI Summary</string>
+</resources>
