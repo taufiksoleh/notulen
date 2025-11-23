@@ -31,12 +31,12 @@ class MeetingRepositoryImpl @Inject constructor(
 
     override fun getAllMeetings(): Flow<Result<List<Meeting>>> {
         return meetingDao.getAllMeetings()
-            .map { entities ->
+            .map<List<com.notulen.data.local.entity.MeetingEntity>, Result<List<Meeting>>> { entities ->
                 Result.Success(entities.map { it.toDomain() })
             }
             .catch { e ->
                 Timber.e(e, "Error getting meetings from local database")
-                emit(Result.Error(e, "Failed to load meetings"))
+                emit(Result.Error(e, "Failed to load meetings") as Result<List<Meeting>>)
             }
     }
 
