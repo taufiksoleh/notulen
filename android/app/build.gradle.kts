@@ -29,10 +29,16 @@ android {
     signingConfigs {
         create("release") {
             // For CI/CD, these will be provided via environment variables
-            storeFile = file(System.getenv("KEYSTORE_FILE") ?: "release-keystore.jks")
-            storePassword = System.getenv("SIGNING_STORE_PASSWORD") ?: "android"
-            keyAlias = System.getenv("SIGNING_KEY_ALIAS") ?: "release"
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: "android"
+            val keystorePath = System.getenv("KEYSTORE_FILE") ?: "release-keystore.jks"
+            val keystoreFile = file(keystorePath)
+
+            // Only set signing config if keystore exists
+            if (keystoreFile.exists()) {
+                storeFile = keystoreFile
+                storePassword = System.getenv("SIGNING_STORE_PASSWORD") ?: "android"
+                keyAlias = System.getenv("SIGNING_KEY_ALIAS") ?: "release"
+                keyPassword = System.getenv("SIGNING_KEY_PASSWORD") ?: "android"
+            }
         }
     }
 
@@ -51,11 +57,13 @@ android {
                 "proguard-rules.pro"
             )
 
-            // Sign with release config if available, otherwise use debug
-            try {
-                signingConfig = signingConfigs.getByName("release")
-            } catch (e: Exception) {
-                signingConfig = signingConfigs.getByName("debug")
+            // Only use release signing if keystore exists
+            val keystoreFile = file(System.getenv("KEYSTORE_FILE") ?: "release-keystore.jks")
+            signingConfig = if (keystoreFile.exists()) {
+                signingConfigs.getByName("release")
+            } else {
+                // Use debug signing for unsigned builds
+                signingConfigs.getByName("debug")
             }
         }
     }
